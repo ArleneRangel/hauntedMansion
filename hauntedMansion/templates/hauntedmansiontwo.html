@@ -557,8 +557,8 @@
             let returnToGrandHallFromFrontDoorLivingRoomWon = document.querySelector("#returnToGrandHallFromFrontDoorLivingRoomWon")
             let returnToGrandHallFromDiningRoomWon = document.querySelector("#returnToGrandHallFromDiningRoomWon")
             let returnToGrandHallFromBedroomWon = document.querySelector("#returnToGrandHallFromBedroomWon")
-            let returnToGrandHallFromBasement = docuement.querySelector("#returnToGrandHallFromBasement")
-            let returnToGrandHallFromBasementWon = docuement.querySelector("#returnToGrandHallFromBasementWon")
+            let returnToGrandHallFromBasement = document.querySelector("#returnToGrandHallFromBasement")
+            let returnToGrandHallFromBasementWon = document.querySelector("#returnToGrandHallFromBasementWon")
             let returnToGrandHallFromFrontDoorLivingRoomRiddle = document.querySelector("#returnToGrandHallFromFrontDoorLivingRoomRiddle")
 
         }); //End of Page Load
@@ -737,14 +737,12 @@
             progressBarStatus()
         })
 
-        oneAnswerButton.addEventListener("click", () => {
-            // emojiMovieGame() 
+        oneAnswerButton.addEventListener("click", () => { 
             oneAnswer()
             emojiMovieGame() 
         })
 
         twoAnswerButton.addEventListener("click", () => {
-            // emojiMovieGame() 
             twoAnswer()
             emojiMovieGame() 
         })
@@ -787,7 +785,6 @@
 
         function newGame() {
             window.location.reload(true);
-            // window.location.href = window.location.href.split('#')[0];
         }
 
         function grandHall() {
