@@ -1,0 +1,1246 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="stylesheet" href="{% static "javascript/css/bootstrap.css" %}" media="screen">
+        <link rel="stylesheet" href="{% static "css/HM_Custom.css" %}" media="screen">
+        <link rel="stylesheet" href="{% static "css/haunted_mansion.css" %}" media="screen">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Barriecito&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/maphilight/1.4.0/jquery.maphilight.min.js"></script>
+
+    </head>
+    <body style="background-color: black">
+        
+    <!-- HAUNTED MANSION TWO -->
+
+    <div class="card border-white rounded-lg m-5 mx-auto" style="width: 50rem; background-color: black;">
+        <div class="card-body m-5 pb-2">
+         
+            <h1 class="creepster" style="color:brown ">Haunted Mansion Game</h1>
+            <br>
+
+                <div class="hauntedMansion josefin">
+
+                    <img src="{% static "img/hauntedMansion.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+                    <p>You're walking in the forest with your dog, Romeo, when you come 
+                    across a strange house. Romeo starts getting aggressive and bolts into the house.</p>
+
+                    <p>You chase after him, but stop at the front door.</p>
+
+                    <!-- START OF GAME BUTTONS -->
+                    <div><button type="button" id="startOfGameButton">Enter House</button></div><br>
+                    <div><button type="button" id="leaveButton">Leave</button></div>
+                
+                </div>
+
+            <!-- LEAVE -->
+
+                <div class="youLose" style="display: none;">
+
+                    <img src="{% static "img/leave.jpeg" %}" width="700" height="450" class="center">
+
+                    <p>You leave and never see Romeo again. You lose.</p>
+
+                    <div><button type="button" id="newGameButton">New Game</button></div>
+                
+                </div>
+
+            <!-- GRAND HALL -->
+
+                <div class="grandHall josefin" style="display: none;" >
+
+                    <div onclick="showCoords(event)" id="grandHallImage"> 
+                        <img src="{% static "img/grandHall.jpeg" %}" width="700" height="400"class="center map" usemap="#image-map" target="_blank"> 
+                    
+                        <map name="image-map">
+                            <area shape="rect" coords="320,195,380,260" id="frontDoorMap" href="#"> 
+                            <area shape="rect" coords="30,230,130,370" id="livingRoomMap" href="#"> 
+                            <area shape="rect" coords="30,0,191,120" id="bedroomMap" href="#"> 
+                            <area shape="rect" coords="500,0,650,120" id="libraryMap" href="#"> 
+                            <area shape="rect" coords="610,240,700,390" id="diningRoomMap" href="#"> 
+                            <area shape="rect" coords="220,290,270,350" id="basementLeftMap" href="#"> 
+                            <area shape="rect" coords="430,290,480,350" id="basementRightMap" href="#"> 
+                        </map>
+                    </div>
+                    <em><p style="font-size:70%; text-align:right; color: chocolate">Hover over the image to open a door</p></em>
+
+                    <p>Grand Hall</p>
+
+                    <p>Looking around, you see...</p>
+
+                    <audio id="darkAmbienceAudio" autoplay>
+                        <source src="{% static "audio/grandHallReal.mp3" %}" type="audio/mpeg">
+                    </audio> 
+
+                    <!-- PROGRESS BAR -->
+                    <div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar" id="progressBar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <br>
+                    <em><p id="progressBarText" style="font-size:70%; color: chocolate">4 Riddles To Solve To Open The Front Door</p></em>
+                    
+                </div>
+
+            <!-- FRONT DOOR -->
+
+                <div class="frontDoor josefin" style="display: none;">
+
+                    <img src="{% static "img/frontDoor.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+                    
+                    <p>Front Door</p>
+
+                    <p>Drat! I just came in through this door and now it's locked. How do I get out of here?</p>
+
+                    <button type="button" id="returnToGrandHallFromFrontDoor">Return to Grand Hall</button>
+
+                </div>
+
+            <!-- FRONT DOOR + LIVING ROOM SMART LOCK GAME WON + NO ROMEO -->
+
+                <div class="frontDoorLivingRoomWon josefin" style="display: none;">
+
+                    <img src="{% static "img/frontDoor.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>Front Door</p>
+
+                    <p>The front door key works!! I can leave. Except... aren't we forgetting our little friend?</p>
+
+                    <button type="button" id="returnToGrandHallFromFrontDoorLivingRoomWon">Return to Grand Hall</button>
+
+                </div>
+            
+            <!-- FRONT DOOR + LIVING ROOM SMART LOCK GAME WON + WTIH ROMEO + NEED TO DO RIDDLE -->
+
+                <div class="frontDoorLivingRoomRiddle josefin" style="display: none;">
+
+                    <img src="{% static "img/frontDoor.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+
+                    <p>The front door key works!! Except... we need to complete the phrase to exit</p>
+
+                    <!-- COMPLETE THE PHRASE TO EXIT GAME -->
+                    <p style="font-size: 110%">"WE'RE NOT IN _ _ _ _ _ _ _ _ _ _ ANYMORE ALICE"</p>
+                    <input type="text" id="frontDoorGame" placeholder="COMPLETE THE PHRASE">
+                    <button onclick="frontDoorGame()">Submit</button>
+                    <br>
+                    <p id="frontDoorGameError"></p>
+
+                    <button type="button" id="returnToGrandHallFromFrontDoorLivingRoomRiddle">Return to Grand Hall</button> 
+
+                </div>
+
+            <!-- FRONT DOOR + LIVING ROOM SMART LOCK GAME WON + RIDDLE WON-->
+
+                <div class="frontDoorRomeoWon josefin" style="display: none;">
+
+                    <img src="{% static "img/youWin.jpeg" %}" width="600" height="400" class="center">
+                    <br>
+                    <br>
+
+                    <h3>You escaped the Haunted House with Romeo. You celebrate by giving him a treat.</h3>
+
+                    <button type="button" id="newGameWonButton">NEW GAME</button>
+
+                </div>
+
+            <!-- LIVING ROOM -->
+
+                <div class="livingRoom josefin" style="display: none;">
+
+                    <img src="{% static "img/livingRoom.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>Living Room</p>
+
+                    <p>This room's pretty empty... wait, what's that?</p>
+
+                    <em><p style="font-size: 80%">*You see an oddly modern smart lock featuring bluetooth access, fingerprint scanner, and voice command. You try out the keypad</p></em>
+
+                    <!-- SMART LOCK GAME -->
+                    <input type="text" id="livingRoomSmartLockGame" placeholder="Enter 4 Digital Combination">
+                    <button onclick="livingRoomSmartLockGame()">Submit</button>
+                    <p id="livingRoomSmartLockGameError"></p>
+                
+                    <button type="button" id="returnToGrandHallFromLivingRoom">Return to Grand Hall</button>
+
+                </div>
+
+            <!-- LIVING ROOM SMART LOCK GAME WON-->
+
+                <div class="livingRoomWon josefin" style="display: none;">
+
+                    <img src="{% static "img/livingRoomKey.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>It worked!</p>
+
+                    <p>I wonder what this is for?</p>
+                
+                    <button type="button" id="returnToGrandHallFromLivingRoomWon">Return to Grand Hall</button>
+
+                </div>
+            
+            <!-- BEDROOM  -->
+
+                <div class="bedroom josefin" style="display: none;">
+
+                    <img src="{% static "img/bedRoom.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>Hmm... door is locked.</p>
+
+                    <em><p style="font-size: 80%">*Ruffling sound*</p></em>
+
+                    <p>There's something inside! Let's get out of here!!</p>
+                    
+                    <button type="button" id="returnToGrandHallFromBedroom">Return to Grand Hall</button>
+
+                </div>
+            
+            <!-- BEDROOM RIDDLE GAME WON -->
+
+                <div class="bedroomWon josefin" style="display: none;">
+
+                    <img src="{% static "img/romeoAngel.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>Bedroom</p>
+
+                    <p>The key from the ghost worked!</p>
+
+                    <p>You found Romeo! He's alive and well. Now we need to get out!</p>
+                    
+                    <button type="button" id="returnToGrandHallFromBedroomWon">Return to Grand Hall</button>
+
+                </div>
+                    
+            <!-- LIBRARY -->
+
+                <div class="library josefin" style="display: none;">
+
+                    <img src="{% static "img/library.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>Library</p>
+
+                    <p>Lots of books here. Wonder if there's anything worth reading.</p>
+
+                    <div><button type="button" id="theClosetButton">The Closet</button></div>
+                    <div><button type="button" id="myTinyLittleTemptressButton">My Tiny Little Temptress</button></div>
+                    <div><button type="button" id="lastMessagesButton">Last Messages</button></div>
+                    <div><button type="button" id="returnToGrandHallFromLibrary">Return to Grand Hall</button></div>
+
+                    <audio id="libraryDoorOpening" autoplay>
+                        <source src="{% static "audio/libraryDoorOpening.mp3" %}" type="audio/mpeg">
+                    </audio> 
+
+                </div>
+            
+            <!-- LIBARAY | THE CLOSET  -->
+
+                <div class="theCloset josefin" style="display: none;">
+
+                    <img src="{% static "img/theCloset.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>The Closet</p>
+
+                    <p>"Dad!" she screamed.</p>
+
+                    <p>"Honey, I'm here. Is everything okay?" he asked.</p>
+
+                    <p>She nodded. "Clawchaser won't let me sleep."</p>
+
+                    <p>"Clawchaser? That's funny, when I was a kid, my monster's name was Clawchaser too! 
+                    Maybe he's coming for me, not you." he laughed.</p>
+
+                    <p>She reached to turn off the light.</p>
+
+                    <p>"He told me the same thing."</p>
+
+                    <div><button type="button" id="returnToLibraryFromTheCloset">Finish Reading</button></div>
+
+                    <audio id="theClosetAudio" autoplay>
+                        <source src="{% static "audio/theClosetAudio.mp3" %}" type="audio/mpeg">
+                    </audio> 
+
+                </div>
+
+            <!-- LIBARAY | MY TINY LITTLE TEMPTRESS  -->
+
+                <div class="littleTemp josefin" style="display: none;">
+
+                    <!-- <img src="{% static "img/littleTemp.jpeg" %}" wwidth="600" height="450" class="center"> -->
+
+                    <p>My Tiny Little Temptress</p>
+
+                    <p>60% of marriages end in infidelity. All the signs were there, but I didn’t want to 
+                    believe it. It took a while to accept, but I knew the truth. My husband was cheating on me.</p>
+
+                    <p>Something had to be done, obviously. I love my husband. I’m not having some little 
+                    temptress steal him away from me! So I took matters into my own hands.</p>
+
+                    <p>Thank god she’s still little. I don’t think I could have drowned her that easily if she could walk just yet.</p>
+
+                    <p>Wait what is that written on the side?</p>
+
+                    <p>"Combo: 0711"</p>
+
+                    <div><button type="button" id="returnToLibraryFromLittleTemp">Finish Reading</button></div>
+
+                    <audio id="MyTiny" autoplay>
+                        <source src="{% static "audio/MyTiny.mp3" %}" type="audio/mpeg">
+                    </audio> 
+
+                </div>
+
+            <!-- LIBARAY | LAST MESSAGES -->
+
+                <div class="lastMessages josefin" style="display: none;">
+
+                    <img src="{% static "img/lastMessages.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>Last Messages</p>
+
+                    <p>I love you mom</p>
+
+                    <p>I can hear footsteps on the stairs I think he’s outside my room</p>
+
+                    <p>I hear sirens but they’re far away</p>
+
+                    <p>I’m hiding in the closet I hope he didn’t hear me</p>
+
+                    <p>Hang on I heard something downstairs</p>
+
+                    <p>The cops are already here looking for him, they’ll catch him</p>
+
+                    <p>Don’t worry mom, I’m SAFE, I love you.</p>
+
+                    <p>The cops said he’s some escaped serial killer and he’s been breaking into homes around the area</p>
+
+                    <p>Yes mom it’s on the news now. I'll keep my doors locked.</p>
+
+                    <em><p style="font-size: 80%">*Messages are displayed in chronological order, with most recent at the top.</p></em>
+
+                    <div><button type="button" id="returnToLibraryFromLastMessages">Finish Reading</button></div>
+
+                    <audio id="Horror-Chase" autoplay>
+                        <source src="{% static "audio/Horror-Chase.mp3" %}" type="audio/mpeg">
+                    </audio> 
+
+                </div>
+
+            <!-- DINING ROOM -->
+
+                <div class="diningRoom josefin" style="display: none;">
+
+                    <img src="{% static "img/diningRoom.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p style="color:red">Dining room</p>
+
+                    <em><p>"whoo-oo-oo-oo..."</p></em>
+
+                    <p>Oh whoops. You weren't supposed to see me. I thought you were going to the other room. 
+                    Now that you found me, I'll give you a gift if you answer my riddle.</p>
+
+                    <p style="color:red">Riddle</p>
+
+                    <p id="riddleQuestion"></p>
+
+                    <em><p>Hint: If you don't know, guess something random three times.</p></em>
+
+                    <input type="text" id="riddleGameAnswer" placeholder="Riddle Answer">
+                    <button onclick="riddleGame()">Submit</button>
+                    <p id="riddleGameError"></p>
+                    
+                    <button type="button" id="returnToGrandHallFromDiningRoom">Return to Grand Hall</button>
+
+                    <audio id="GhostVoice" autoplay>
+                        <source src="{% static "audio/GhostVoice.mp3" %}" type="audio/mpeg">
+                    </audio> 
+
+                </div>
+
+            <!-- DINING ROOM RIDDLE ANSWER WON -->
+
+                <div class="diningRoomWon josefin" style="display: none;">
+
+                    <img src="{% static "img/riddlegift.jpeg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>You got it!</p>
+
+                    <p>"Blast, you're too smart! Here's my gift."</p>
+                    
+                    <button type="button" id="returnToGrandHallFromDiningRoomWon">Return to Grand Hall</button>
+
+                </div>
+
+            <!-- BASEMENT -->
+
+                <div class="basement josefin" style="display: none;">
+
+                    <img src="{% static "img/basement.jpg" %}" width="700" height="450" class="center">
+                    <br>
+                    <br>
+
+                    <p>Basement</p>
+
+                    <p>Based on the emojis, guess the correct scary movie.</p>
+
+                    <p id="emojiQuestionPlaceholder"></p>
+                    <p id="emojiPlaceholder"></p>
+
+                    <div class="btn-group-vertical">
+                        <button type="button" class="btn btn-secondary" id="oneAnswerButton"></button>
+                        <button type="button" class="btn btn-secondary" id="twoAnswerButton"></button>
+                        <button type="button" class="btn btn-secondary" id="threeAnswerButton"></button>
+                        <button type="button" class="btn btn-secondary" id="fourAnswerButton"></button>
+                    </div>
+
+                    <br>
+                    <br>
+                    <br>
+
+                    <div class="stuckInTheBasement" style="display: none;">
+                        <p id="emojiGameError">Wrong Movie Selected. Play again.</p>
+                        <button type="button" class="btn btn-primary" id="emojiNewGameButton">New Emoji Movie</button>
+                    </div>
+                    
+                    <button type="button" id="returnToGrandHallFromBasement">Return to Grand Hall</button>
+                    <br>
+                    <em><p id="emojiGameErrorButton"></p></em>
+
+                    <audio id="basementAudio" autoplay>
+                        <source src="{% static "audio/basementAudio.mp3" %}" type="audio/mpeg">
+                    </audio> 
+
+                </div>
+
+            <!-- BASEMENT EMOJI GAME WON -->
+
+            <div class="basementWon josefin" style="display: none;">
+
+                <img src="{% static "img/wonderland.jpeg" %}" width="700" height="450" class="center">
+                <br>
+                <br>
+
+                <p>You guess correctly!</p>
+
+                <p>Remember this quote.</p>
+                
+                <button type="button" id="returnToGrandHallFromBasementWon">Return to Grand Hall</button>
+
+            </div>
+    
+        </div>
+    </div>
+
+    </body>
+
+    <script>
+        //Global Variables
+        let smartLockGameAttempts = 0;
+        let riddleGameAttempts = 0;
+        let foundRomeo = false;
+        let smartLockGameWon = false;
+        let riddleGameWon = false; 
+        let emojiGameRiddleWon = false;
+
+        let riddleGameQuestionsAndAnswers = [
+            {
+                question: "The person who built it sold it. The person who bought it never used it. The person who used it never saw it. What is it?",
+                answer: "coffin"
+            },
+            {
+                question: "What types of roads do ghosts like to drive on?",
+                answer: "dead ends"
+            },
+            {
+                question: "Where do ghosts go on vacation?",
+                answer: "lake erie"
+            },
+        ]
+
+        var riddleGameNewQuestion = "";
+        var riddleGameNewAnswer = "";
+
+        var randomNewEmoji = "";
+
+        var emojiCorrectAnswer = "";
+
+        //ProgessBar
+        let frontDoorProgressBar = false;
+        let livingRoomProgressBar = false;
+        let diningRoomProgressBar = false;
+        let basementProgressBar = false;
+        let foundRomeoProgesBar = false;
+
+        //Emoji Generated Answers
+        var answer = "";
+        var oneEmojiAnswer = "";
+        var twoEmojiAnswer = "";
+        var threeEmojiAnswer = "";
+        var fourEmojiAnswer = "";
+
+        //PAGE LOAD
+        document.addEventListener("DOMContentLoader", () => {
+
+            let startOfGameButton = document.querySelector("#startOfGameButton")
+            let leaveButton = document.querySelector("#leaveButton")
+            let newGameButton = document.querySelector("#newGameButton")
+            let newGameWonButton = document.querySelector("#newGameWonButton")
+
+            //Grand Hall Room Map Clicks
+            let frontDoorMap = document.querySelector("#frontDoorMap")
+            let livingRoomMap = docuemnt.querySelector("#livingRoomMap")
+            let bedroomMap = document.querySelector("#bedroomMap")
+            let libraryMap = document.querySelector("#libraryMap")
+            let diningRoomMap = document.querySelector("#diningRoomMap")
+            let basementLeftMap = document.querySelector("#basementLeftMap")
+            let basementRightMap = document.querySelector("#basementRightMap")
+
+            //The Library Rooms Buttons
+            let theClosetButton = document.querySelector("#theClosetButton")
+            let myTinyLittleTemptressButton = document.querySelector("#myTinyLittleTemptressButton")
+            let lastMessagesButton = document.querySelector("#lastMessagesButton")
+
+            //The Library Rooms Finish Buttons
+            let returnToLibraryFromTheCloset = document.querySelector("#returnToLibraryFromTheCloset")
+            let returnToLibraryFromLittleTemp = document.querySelector("#returnToLibraryFromLittleTemp")
+            let returnToLibraryFromLastMessages = document.querySelector("#returnToLibraryFromLastMessages")
+
+            //Emoji Game Buttons
+            let oneAnswerButton = document.querySelector("#oneAnswerButton")
+            let twoAnswerButton = document.querySelector("#twoAnswerButton")
+            let threeAnswerButton = document.querySelector("#threeAnswerButton")
+            let fourAnswerButton = document.querySelector("#fourAnswerButton")
+            let emojiNewGameButton = document.querySelector("#emojiNewGameButton")
+
+            //Return To Grand Hall Buttons
+            let returnToGrandHallFromFrontDoor = document.querySelector("#returnToGrandHallFromFrontDoor")
+            let returnToGrandHallFromLivingRoom = document.querySelector("#returnToGrandHallFromLivingRoom")
+            let returnToGrandHallFromBedroom = document.querySelector("#returnToGrandHallFromBedroom")
+            let returnToGrandHallFromLibrary = document.querySelector("#returnToGrandHallFromLibrary")
+            let returnToGrandHallFromDiningRoom = document.querySelector("#returnToGrandHallFromDiningRoom")
+            let returnToGrandHallFromLivingRoomWon = document.querySelector("#returnToGrandHallFromLivingRoomWon")
+            let returnToGrandHallFromFrontDoorLivingRoomWon = document.querySelector("#returnToGrandHallFromFrontDoorLivingRoomWon")
+            let returnToGrandHallFromDiningRoomWon = document.querySelector("#returnToGrandHallFromDiningRoomWon")
+            let returnToGrandHallFromBedroomWon = document.querySelector("#returnToGrandHallFromBedroomWon")
+            let returnToGrandHallFromBasement = docuement.querySelector("#returnToGrandHallFromBasement")
+            let returnToGrandHallFromBasementWon = docuement.querySelector("#returnToGrandHallFromBasementWon")
+            let returnToGrandHallFromFrontDoorLivingRoomRiddle = document.querySelector("#returnToGrandHallFromFrontDoorLivingRoomRiddle")
+
+        }); //End of Page Load
+
+        //START OF GAME
+        startOfGameButton.addEventListener("click", () => {
+            startOfGame()
+            grandHall()
+            newQuestionandAnswerGenerated()
+        })
+
+        //LEAVE
+        leaveButton.addEventListener("click", () => {
+            startOfGame()
+            leave()
+        })
+
+        //START NEW GAME
+        newGameButton.addEventListener("click", () => {
+            newGame()
+        })
+
+        //START NEW GAME AFTER WINNING THE GAME
+        newGameWonButton.addEventListener("click", () => {
+            newGame()
+            newGamePauseMusic()
+        })
+
+        frontDoorMap.addEventListener("click", () => {
+            grandHallHidden()
+            frontDoor()
+            pauseGrandHallMusic()
+        })
+
+        returnToGrandHallFromFrontDoor.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        returnToGrandHallFromFrontDoorLivingRoomWon.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        returnToGrandHallFromFrontDoorLivingRoomRiddle.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        livingRoomMap.addEventListener("click", () => {
+            grandHallHidden()
+            livingRoom()
+            pauseGrandHallMusic()
+        })
+
+        returnToGrandHallFromLivingRoom.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        returnToGrandHallFromLivingRoomWon.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        bedroomMap.addEventListener("click", () => {
+            grandHallHidden()
+            bedroom()
+            pauseGrandHallMusic()
+        })
+
+        returnToGrandHallFromBedroom.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        returnToGrandHallFromBedroomWon.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        libraryMap.addEventListener("click", () => {
+            grandHallHidden()
+            library()
+            pauseGrandHallMusic()
+        })
+
+        returnToGrandHallFromLibrary.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        theClosetButton.addEventListener("click", () => {
+            libraryHidden()
+            theCloset()
+        })
+
+        returnToLibraryFromTheCloset.addEventListener("click", () => {
+            returnToLibrary()
+            library()
+            progressBarStatus()
+        })
+
+        myTinyLittleTemptressButton.addEventListener("click", () => {
+            libraryHidden()
+            littleTemp()
+        })
+
+        returnToLibraryFromLittleTemp.addEventListener("click", () => {
+            returnToLibrary()
+            library()
+            progressBarStatus()
+        })
+
+        lastMessagesButton.addEventListener("click", () => {
+            libraryHidden()
+            lastMessages()
+        })
+
+        returnToLibraryFromLastMessages.addEventListener("click", () => {
+            returnToLibrary()
+            library()
+            progressBarStatus()
+        })
+
+        diningRoomMap.addEventListener("click", () => {
+            grandHallHidden()
+            diningRoom()
+            pauseGrandHallMusic()
+        })
+
+        returnToGrandHallFromDiningRoom.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            newQuestionandAnswerGenerated()
+            progressBarStatus()
+        })
+
+        returnToGrandHallFromDiningRoomWon.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        basementLeftMap.addEventListener("click", () => {
+            grandHallHidden()
+            basement()
+            emojiPicturesGeneratedTwo()
+            pauseGrandHallMusic()
+        })
+
+        basementRightMap.addEventListener("click", () => {
+            grandHallHidden()
+            basement()
+            emojiPicturesGeneratedTwo()
+            pauseGrandHallMusic()
+            
+        })
+
+        returnToGrandHallFromBasement.addEventListener("click", () => {
+            returnToGrandHallFromBasementGameLost()
+            progressBarStatus()
+        })
+
+        returnToGrandHallFromBasementWon.addEventListener("click", () => {
+            grandHall()
+            returnToGrandHall()
+            progressBarStatus()
+        })
+
+        oneAnswerButton.addEventListener("click", () => {
+            // emojiMovieGame() 
+            oneAnswer()
+            emojiMovieGame() 
+        })
+
+        twoAnswerButton.addEventListener("click", () => {
+            // emojiMovieGame() 
+            twoAnswer()
+            emojiMovieGame() 
+        })
+
+        threeAnswerButton.addEventListener("click", () => {
+            // emojiMovieGame() 
+            threeAnswer()
+            emojiMovieGame() 
+        })
+        
+        fourAnswerButton.addEventListener("click", () => {
+            // emojiMovieGame() 
+            fourAnswer()
+            emojiMovieGame() 
+        })
+
+        emojiNewGameButton.addEventListener("click", () => {
+            emojiPicturesGeneratedTwo()
+        })
+
+        //START OF FUNCTIONS 
+        function startOfGame() {
+            //hiding the start of the game
+            document.querySelectorAll(".hauntedMansion")[0].style.display = "none";
+        }
+
+        function leave() {
+            document.querySelectorAll(".youLose")[0].style.display = "block";
+        }
+        
+        function newGamePauseMusic() {
+            //below pauses music from every room
+            document.getElementById("theClosetAudio").pause();
+            document.getElementById("MyTiny").pause();
+            document.getElementById("Horror-Chase").pause();
+            document.getElementById("GhostVoice").pause();
+            document.getElementById("basementAudio").pause();
+
+        }
+
+        function newGame() {
+            window.location.reload(true);
+            // window.location.href = window.location.href.split('#')[0];
+        }
+
+        function grandHall() {
+            //showing grandHall
+            document.querySelectorAll(".grandHall")[0].style.display = "block";   
+
+            //play music
+            document.getElementById("darkAmbienceAudio").play();        
+        }
+
+        function grandHallHidden() {
+            document.querySelectorAll(".grandHall")[0].style.display = "none";
+        }
+
+        function frontDoor() {
+            
+            if (smartLockGameWon == true && foundRomeo == false) {
+                document.querySelectorAll(".frontDoorLivingRoomWon")[0].style.display = "block";
+            } else if (smartLockGameWon == true && foundRomeo == true && emojiGameRiddleWon == true) {
+
+                if (emojiGameRiddleWon == true) {
+                    document.querySelectorAll(".frontDoorLivingRoomRiddle")[0].style.display = "block";
+                    // document.querySelectorAll(".frontDoorRomeoWon")[0].style.display = "block"
+                }
+            
+            } else { 
+                document.querySelectorAll(".frontDoor")[0].style.display = "block";
+            }
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+            
+        } //end function
+
+        function frontDoorGame() {
+            var frontDoorGameValue = document.getElementById("frontDoorGame").value;
+            console.log(frontDoorGameValue)
+
+            if (frontDoorGameValue == "wonderland") {
+                document.querySelectorAll(".frontDoorLivingRoomRiddle")[0].style.display = "none";
+                document.querySelectorAll(".frontDoorRomeoWon")[0].style.display = "block";
+            } else {
+                document.getElementById("frontDoorGame").value = "";
+                document.getElementById("frontDoorGameError").innerHTML = "Try again!";
+            }
+
+        }
+
+        function returnToGrandHall() {
+            //This hides Front Door, Living Room, Bedroom, Library, Dining Room, Basement
+            document.querySelectorAll(".frontDoor")[0].style.display = "none";
+            document.querySelectorAll(".livingRoom")[0].style.display = "none";
+            document.querySelectorAll(".bedroom")[0].style.display = "none";
+            document.querySelectorAll(".library")[0].style.display = "none";
+            document.querySelectorAll(".diningRoom")[0].style.display = "none";
+            document.querySelectorAll(".livingRoomWon")[0].style.display = "none";
+            document.querySelectorAll(".frontDoorLivingRoomWon")[0].style.display = "none";
+            document.querySelectorAll(".diningRoomWon")[0].style.display = "none";
+            document.querySelectorAll(".bedroomWon")[0].style.display = "none";
+            document.querySelectorAll(".basementWon")[0].style.display = "none";
+            document.querySelectorAll(".frontDoorLivingRoomRiddle")[0].style.display = "none";
+            // document.querySelectorAll(".basmentWon")[0].style.display = "none";
+
+            // below plays the GrandHall music
+            document.getElementById("darkAmbienceAudio").play();
+
+            //below pauses music from every room
+            document.getElementById("theClosetAudio").pause();
+            document.getElementById("MyTiny").pause();
+            document.getElementById("Horror-Chase").pause();
+            document.getElementById("GhostVoice").pause();
+            document.getElementById("basementAudio").pause();
+
+        }
+
+        function livingRoom() {
+            //below code is for when a person has maxed out the amount of tries from livingRoomSmartLockGame()
+            document.getElementById("livingRoomSmartLockGame").disabled = false;
+            document.getElementById("livingRoomSmartLockGameError").innerHTML = "";
+            document.getElementById("livingRoomSmartLockGame").value = "";
+            smartLockGameAttempts = 0;
+
+            if (smartLockGameWon == true) {
+                document.querySelectorAll(".livingRoomWon")[0].style.display = "block";
+            } else {
+                document.querySelectorAll(".livingRoom")[0].style.display = "block";
+            } 
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+
+        } //end of function
+
+        function bedroom() {
+
+            if (riddleGameWon == true) {
+                document.querySelectorAll(".bedroomWon")[0].style.display = "block";
+                foundRomeo = true;
+                foundRomeoProgesBar = true;
+            } else { 
+                document.querySelectorAll(".bedroom")[0].style.display = "block";
+            }
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+            
+        }
+
+        function library() {
+            document.querySelectorAll(".library")[0].style.display = "block";
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+
+            //play library music
+            // document.getElementById("libraryDoorOpening").play();
+        }
+
+        function libraryHidden() {
+            document.querySelectorAll(".library")[0].style.display = "none";
+        }
+
+        function theCloset() {
+            document.querySelectorAll(".theCloset")[0].style.display = "block";
+
+             //pause grandHall music
+             document.getElementById("darkAmbienceAudio").pause();  
+
+            //play theCloset music
+            document.getElementById("theClosetAudio").play();
+        }
+
+        function littleTemp() {
+            document.querySelectorAll(".littleTemp")[0].style.display = "block";
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+
+            //play MyTiny music
+            document.getElementById("MyTiny").play();
+        }
+
+        function lastMessages() {
+            document.querySelectorAll(".lastMessages")[0].style.display = "block";
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+
+            //play Horror-Chase music
+            document.getElementById("Horror-Chase").play();
+        }
+
+        function returnToLibrary() {
+            //This hides The Closet, My Tiny Little Temptress + Last Messages
+            document.querySelectorAll(".theCloset")[0].style.display = "none";
+            document.querySelectorAll(".littleTemp")[0].style.display = "none"; 
+            document.querySelectorAll(".lastMessages")[0].style.display = "none";
+        }
+
+        function diningRoom() {
+            //below code is for when a person has maxed out the amount of tries from riddleGame()
+            document.getElementById("riddleGameAnswer").disabled = false;
+            document.getElementById("riddleGameError").innerHTML = "";
+            document.getElementById("riddleGameAnswer").value = "";
+            riddleGameAttempts = 0;
+
+            if (riddleGameWon == true) {
+                document.querySelectorAll(".diningRoomWon")[0].style.display = "block";
+            } else {
+                document.querySelectorAll(".diningRoom")[0].style.display = "block";
+
+                //this shows a random question for the riddle game in newQuestionandAnswerGenerated()
+                document.getElementById("riddleQuestion").innerHTML = riddleGameNewQuestion;
+            }
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+
+            //play GhostVoice audio
+            document.getElementById("GhostVoice").play();
+
+        } //end of function
+
+        function livingRoomSmartLockGame() {
+            var smartLockGameValue = document.getElementById("livingRoomSmartLockGame").value;
+
+            if (smartLockGameAttempts < 2) {
+
+                document.getElementById("livingRoomSmartLockGame").value = "";
+
+                if (smartLockGameValue == "0711") {
+                    document.querySelectorAll(".livingRoom")[0].style.display = "none";
+                    document.querySelectorAll(".livingRoomWon")[0].style.display = "block";
+                    smartLockGameWon = true; 
+                    livingRoomProgressBar = true;
+                } else {
+                    document.getElementById("livingRoomSmartLockGameError").innerHTML = smartLockGameValue + " is the wrong combination. Try again!"
+                    smartLockGameAttempts += 1;
+                }
+
+            } else {
+                document.getElementById("livingRoomSmartLockGame").disabled = true;
+                document.getElementById("livingRoomSmartLockGameError").innerHTML = "Hmm... timed out. Maybe I can try later."
+                smartLockGameAttempts = 0;
+            }
+        } //end of function
+
+        function riddleGame() {
+            var riddleGameValue = document.getElementById("riddleGameAnswer").value;
+
+            if (riddleGameAttempts < 2) {
+
+                document.getElementById("riddleGameAnswer").value = "";
+
+                if (riddleGameValue == riddleGameNewAnswer) {
+                    document.querySelectorAll(".diningRoom")[0].style.display = "none";
+                    document.querySelectorAll(".diningRoomWon")[0].style.display = "block";
+                    riddleGameWon = true;
+                    diningRoomProgressBar = true;
+                } else {
+                    document.querySelector("#riddleGameError").innerHTML = "Wrong. Try again!"
+                    riddleGameAttempts += 1;
+                }
+            
+            } else {
+                riddleGameAttempts = 0;
+                document.getElementById("riddleGameAnswer").disabled = true;
+                document.querySelector("#riddleGameError").innerHTML = riddleGameNewAnswer + "!!! BU WA HAHAHA!!!... and just like that, the ghost flew away."
+            }
+
+        } //end of function
+
+        function newQuestionandAnswerGenerated() {
+            const randomQuestionAndAnswer = riddleGameQuestionsAndAnswers[Math.floor(Math.random() * riddleGameQuestionsAndAnswers.length)];
+            riddleGameNewQuestion = randomQuestionAndAnswer.question;
+            riddleGameNewAnswer = randomQuestionAndAnswer.answer;
+        }
+
+        function progressBarStatus() {
+
+            // below scenarios are for 3 riddles left + no romeo 
+            if (foundRomeoProgesBar == false && !frontDoorProgressBar && diningRoomProgressBar == false && basementProgressBar == false && livingRoomProgressBar == true) {
+                document.getElementById("progressBar").style.cssText = "width: 20%"; 
+                document.getElementById("progressBarText").innerHTML = "3 riddles left + need to find Romeo";  
+            } else if (foundRomeoProgesBar == false && frontDoorProgressBar == false && diningRoomProgressBar == false && basementProgressBar == true && livingRoomProgressBar == false) {
+                document.getElementById("progressBar").style.cssText = "width: 20%"; 
+                document.getElementById("progressBarText").innerHTML = "3 riddles left + need to find Romeo";  
+            } else if (foundRomeoProgesBar == false && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == false && livingRoomProgressBar == false) {
+                document.getElementById("progressBar").style.cssText = "width: 20%"; 
+                document.getElementById("progressBarText").innerHTML = "3 riddles left + need to find Romeo"; 
+
+            // below scenarios are for 3 riddles left + Romeo
+            } else if (foundRomeoProgesBar == true && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == false && livingRoomProgressBar == false) {
+                document.getElementById("progressBar").style.cssText = "width: 40%"; 
+                document.getElementById("progressBarText").innerHTML = "3 riddles left";  
+
+            // below scenarios are for 2 riddles left + no romeo 
+            } else if (foundRomeoProgesBar == false && frontDoorProgressBar == false && diningRoomProgressBar == false && basementProgressBar == true && livingRoomProgressBar == true) {
+                document.getElementById("progressBar").style.cssText = "width: 40%"; 
+                document.getElementById("progressBarText").innerHTML = "2 riddles left + need to find Romeo";  
+            } else if (foundRomeoProgesBar == false && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == true && livingRoomProgressBar == false) {
+                document.getElementById("progressBar").style.cssText = "width: 40%"; 
+                document.getElementById("progressBarText").innerHTML = "2riddles left + need to find Romeo";  
+            } else if (foundRomeoProgesBar == false && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == false && livingRoomProgressBar == true) {
+                document.getElementById("progressBar").style.cssText = "width: 40%"; 
+                document.getElementById("progressBarText").innerHTML = "2 riddles left + need to find Romeo";  
+            
+            // below scenarios are for 2 riddles left + romeo 
+            } else if (foundRomeoProgesBar == true && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == false && livingRoomProgressBar == true) {
+                document.getElementById("progressBar").style.cssText = "width: 60%"; 
+                document.getElementById("progressBarText").innerHTML = "2 riddles left";  
+            } else if (foundRomeoProgesBar == true && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == true && livingRoomProgressBar == false) {
+                document.getElementById("progressBar").style.cssText = "width: 60%"; 
+                document.getElementById("progressBarText").innerHTML = "2 riddles left";  
+
+            // below scenarios are for 1 riddles left + no romeo 
+            } else if (foundRomeoProgesBar == false && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == true && livingRoomProgressBar == true) {
+                document.getElementById("progressBar").style.cssText = "width: 60%"; 
+                document.getElementById("progressBarText").innerHTML = "1 riddle left + need to find Romeo";  
+            
+            // below scenarios are for 1 riddles left + romeo 
+            } else if (foundRomeoProgesBar == true && frontDoorProgressBar == false && diningRoomProgressBar == true && basementProgressBar == true && livingRoomProgressBar == true) {
+                document.getElementById("progressBar").style.cssText = "width: 80%"; 
+                document.getElementById("progressBarText").innerHTML = "1 riddle left";  
+            }
+
+        }
+    
+        function basement() {
+
+            if (emojiGameRiddleWon == true) {
+
+                document.querySelectorAll(".basementWon")[0].style.display = "block";
+
+            } else {
+                
+                document.querySelectorAll(".basement")[0].style.display = "block";
+            }
+
+            //pause grandHall music
+            document.getElementById("darkAmbienceAudio").pause();  
+
+            //play music
+            document.getElementById("basementAudio").play();
+            
+        }
+
+        function returnToGrandHallFromBasementGameLost() {
+
+            //disable Return to Grand Hall button. Player is stuck in basement until they correct answer the game. 
+            document.querySelector("#returnToGrandHallFromBasement").disabled = true;
+            document.getElementById("emojiGameErrorButton").innerHTML = "You are stuck in basement and cannot open the door until you solve the game.";
+        }
+
+        function emojiPicturesGeneratedTwo() {
+            
+            //below generates random emoji
+            var randomEmojis = [
+                {
+                    question: "Which scary movie is this?",
+                    picture: '/static/img/itEmoji.jpeg',
+                    answer: 'IT',
+                    wrongAnswer: "Halloween",
+                    wrongAnswerOne: "IT Chapter Two",
+                    wrongAnswerTwo: "Killer Klowns from Outer Space",
+                }, 
+                {
+                    question: "Which retro horror feature is this one?",
+                    picture: '/static/img/carrieEmoji.jpeg',
+                    answer: "Carrie",
+                    wrongAnswer: "Prom Night",
+                    wrongAnswerOne: "Christine",
+                    wrongAnswerTwo: " Silence of the Lambs",
+                }, 
+                {
+                    question: "Which teen scream is this movie?",
+                    picture: '/static/img/screamEmoji.jpeg',
+                    answer: "Scream",
+                    wrongAnswer: "Prom Night",
+                    wrongAnswerOne: "Scream 2",
+                    wrongAnswerTwo: "Scary Movie"
+                }
+            ]
+
+            //refreshes the game if the player selected the wrong answer
+            document.querySelector("#twoAnswerButton").disabled = false; 
+            document.querySelector("#threeAnswerButton").disabled = false; 
+            document.querySelector("#fourAnswerButton").disabled = false; 
+            document.querySelector("#oneAnswerButton").disabled = false; 
+            //below hides New Emoji Movie button & emojiGameError during the refresh
+            document.querySelectorAll(".stuckInTheBasement")[0].style.display = "none";
+
+            var randomEmoji = randomEmojis[Math.floor(Math.random() * randomEmojis.length)];
+
+            emojiImg = document.createElement('img');
+            emojiImg.src = randomEmoji.picture;
+
+            //below code show emoji question
+            document.getElementById("emojiQuestionPlaceholder").innerHTML = randomEmoji.question;
+
+            //below code emptys the emoji pic
+            document.getElementById('emojiPlaceholder').innerHTML = "";
+            document.getElementById('emojiPlaceholder').appendChild(emojiImg);
+
+            //below code for random wrong emoji to populate as answers
+            document.getElementById("oneAnswerButton").innerHTML = randomEmoji.wrongAnswer;
+            document.getElementById("twoAnswerButton").innerHTML = randomEmoji.wrongAnswerTwo;
+            document.getElementById("threeAnswerButton").innerHTML = randomEmoji.answer;
+            document.getElementById("fourAnswerButton").innerHTML = randomEmoji.wrongAnswerOne;
+
+            //using above answers to save value for global variables to use in function emojiMovieGame()
+            answer = randomEmoji.answer
+            wrongAnswer = randomEmoji.wrongAnswer;
+            wrongAnswerOne = randomEmoji.wrongAnswerOne;
+            wrongAnswerTwo = randomEmoji.wrongAnswerTwo;
+        }
+
+        function emojiMovieGame() {
+
+            if ( (twoEmojiAnswer == answer) || (threeEmojiAnswer == answer) || (fourEmojiAnswer == answer) || (oneEmojiAnswer == answer) ) {
+                //below hides basement after winning
+                document.querySelectorAll(".basement")[0].style.display = "none";
+
+                //shows basementwon riddle needed for front door
+                document.querySelectorAll(".basementWon")[0].style.display = "block";
+
+                emojiGameRiddleWon = true; //TO DO check this
+                basementProgressBar = true;
+
+            } else {
+
+                //below shows New Emoji Movie button & emojiGameError (created new DIV for this & is display on basement load)
+                var stuckInTheBasement = document.querySelectorAll(".stuckInTheBasement");
+                stuckInTheBasement[0].style.display = "block";
+
+                //hides the Return to Grand Hall button after guessing incorrectly
+                document.querySelector("#returnToGrandHallFromBasement").style.display = "none";
+            }
+        }
+
+        function oneAnswer() {
+            oneEmojiAnswer = document.querySelector("#oneAnswerButton").innerHTML
+        
+            //below are all the buttons for the game. each button gets disabled when you chose the wrong answer. 
+            document.querySelector("#twoAnswerButton").disabled = true; 
+            document.querySelector("#threeAnswerButton").disabled = true; 
+            document.querySelector("#fourAnswerButton").disabled = true; 
+
+            //below clears the error message when a player has attempted to leave the game before playing. 
+            document.getElementById("emojiGameErrorButton").innerHTML = "";
+        }
+
+        function twoAnswer() {
+            twoEmojiAnswer = document.querySelector("#twoAnswerButton").innerHTML
+            
+            //below are all the buttons for the game. each button gets disabled when you chose the wrong answer. 
+            // document.querySelector("#twoAnswerButton").disabled = true; 
+            document.querySelector("#threeAnswerButton").disabled = true; 
+            document.querySelector("#fourAnswerButton").disabled = true; 
+            document.querySelector("#oneAnswerButton").disabled = true; 
+
+            //below clears the error message when a player has attempted to leave the game before playing. 
+            document.getElementById("emojiGameErrorButton").innerHTML = "";
+        }
+
+        function threeAnswer() {
+            threeEmojiAnswer = document.querySelector("#threeAnswerButton").innerHTML
+            
+            //below are all the buttons for the game. each button gets disabled when you chose the wrong answer. 
+            document.querySelector("#twoAnswerButton").disabled = true; 
+            document.querySelector("#fourAnswerButton").disabled = true; 
+            document.querySelector("#oneAnswerButton").disabled = true; 
+
+            //below clears the error message when a player has attempted to leave the game before playing. 
+            document.getElementById("emojiGameErrorButton").innerHTML = "";
+        }
+
+        function fourAnswer() {
+            fourEmojiAnswer = document.querySelector("#fourAnswerButton").innerHTML
+            
+            //below are all the buttons for the game. each button gets disabled when you chose the wrong answer. 
+            document.querySelector("#twoAnswerButton").disabled = true; 
+            document.querySelector("#threeAnswerButton").disabled = true; 
+            document.querySelector("#oneAnswerButton").disabled = true; 
+
+            //below clears the error message when a player has attempted to leave the game before playing. 
+            document.getElementById("emojiGameErrorButton").innerHTML = "";
+        }
+
+        $(document).ready(function(){
+            $('.map').maphilight();
+        });
+
+    </script>
+</html>        
+  
